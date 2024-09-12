@@ -12,9 +12,11 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	if os.Getenv("ENV") == "development" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Println("Error loading .env file, proceeding with system environment variables")
+		}
 	}
 
 	db := database.InitDB()
