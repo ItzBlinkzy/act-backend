@@ -1,0 +1,42 @@
+version: '3'
+services:
+  # db:
+  #   build:
+  #     context: .
+  #     dockerfile: ACT_dev_database.Dockerfile
+  #   container_name: act_db
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+  #     MYSQL_CHARACTER_SET_SERVER: 'utf8mb4'
+  #     MYSQL_COLLATION_SERVER: 'utf8mb4_unicode_ci'
+  #     TZ: UTC # Set the timezone to UTC
+  #   volumes:
+  #     - ./db_data:/var/lib/mysql
+  #     - ./load_db/1.sql:/docker-entrypoint-initdb.d/1.sql
+  #   healthcheck:
+  #     test: ["CMD-SHELL", 'mysqladmin ping']
+  #     interval: 15s
+  #     timeout: 5s
+  #     retries: 5
+  #   ports:
+  #     - "3308:3306"
+
+  api:
+    build:
+      context: .
+      dockerfile: ACT_api.Dockerfile
+    container_name: act_api
+    restart: always
+    environment:
+      DB_TYPE: ${DB_TYPE}
+      DB_CONN: ${DB_CONN}
+      AUTH_COOKIE: ${AUTH_COOKIE}
+      AUTH_SECRET: ${JWT_SECRET}
+      PORT: 8083
+      TZ: UTC
+      ENV: ${ENV}
+    volumes:
+      - ./:/application
+    ports:
+      - "8083:8083"
