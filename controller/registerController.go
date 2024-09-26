@@ -12,46 +12,41 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Don't allowed the registration :
-// if the company has the same name of another company.
-// if the company has the same piva of  antoher company.
-// if the company exist and has a user.
-// if the company is different and the user exist
 func Register(c echo.Context) error {
 	var payload model.RegistrationPayload
 	if err := c.Bind(&payload); err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid request payload")
 	}
 
-	if payload.Email == "" || payload.Password == "" || payload.FirstName == "" || payload.LastName == "" || payload.TypeId == 0 {
-		return c.JSON(http.StatusBadRequest, "Tutti i campi sono obbligatori")
+	if payload.Email == "" || payload.Password == "" || payload.FirstName == "" || payload.LastName == "" || payload.TypeUserId == 0 {
+		return c.JSON(http.StatusBadRequest, "All the fields are required")
 	}
 
 	if len(payload.Password) < 6 || !containsDigit(payload.Password) || !containsLetter(payload.Password) || len(payload.Password) > 20 {
-		return c.JSON(http.StatusBadRequest, "La password deve contenere da 6 a 20 caratteri e includere almeno un numero e una lettera")
+		return c.JSON(http.StatusBadRequest, "The passoword must be between 6 to 20 characters in lenght , containing numbers and letter ")
 	}
 
 	// Check for existing email
 	existingUser, err := repository.UserRepo.FindByEmail(payload.Email)
 	if err == nil && existingUser != nil {
-		return c.JSON(http.StatusBadRequest, "Utente gia esistente")
+		return c.JSON(http.StatusBadRequest, "User already exist!")
 	}
 
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(payload.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, "Impossibile eseguire l'hashing della password")
+		return c.JSON(http.StatusInternalServerError, "Impossing to hash password")
 	}
 
 	// Create the user
 	newUser := &model.User{
-		FirstName: payload.FirstName,
-		LastName:  payload.LastName,
-		Email:     payload.Email,
-		Password:  string(hashedPassword),
-		TypeId:    payload.TypeId,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		FirstName:  payload.FirstName,
+		LastName:   payload.LastName,
+		Email:      payload.Email,
+		Password:   string(hashedPassword),
+		TypeUserId: payload.TypeUserId,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	}
 
 	if err := repository.UserRepo.CreateUser(newUser); err != nil {
@@ -59,7 +54,7 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Failed to create user: %v", err))
 	}
 
-	return c.JSON(http.StatusOK, "Utente creato con successo!")
+	return c.JSON(http.StatusOK, "User created successfully!")
 }
 
 func containsDigit(s string) bool {

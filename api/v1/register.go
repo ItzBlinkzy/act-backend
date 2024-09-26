@@ -7,5 +7,5 @@ import (
 )
 
 func RegisterGroup(g *echo.Group) {
-	g.POST("/register-company-first-user", controller.Register)
+	g.POST("/register-user", controller.Register)
 }
