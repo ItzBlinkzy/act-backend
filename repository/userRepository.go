@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"strings"
 
 	"github.com/itzblinkzy/act-backend/database"
@@ -25,11 +25,11 @@ func (r *UserRepository) FetchAll(filters *model.User) ([]*model.User, int64, er
 		query.WriteString(" WHERE ")
 		clauses := []string{}
 		if filters.FirstName != "" {
-			clauses = append(clauses, "firstName = ?")
+			clauses = append(clauses, "first_name = ?")
 			args = append(args, filters.FirstName)
 		}
 		if filters.LastName != "" {
-			clauses = append(clauses, "lastName = ?")
+			clauses = append(clauses, "last_name = ?")
 			args = append(args, filters.LastName)
 		}
 		if filters.Email != "" {
@@ -57,19 +57,23 @@ func (r *UserRepository) FetchAll(filters *model.User) ([]*model.User, int64, er
 func (r *UserRepository) CreateUser(user *model.User) error {
 	db := database.GetDB()
 	_, err := db.Exec(
-		"INSERT INTO users (firstName, lastName, email, password, companyId, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		user.FirstName, user.LastName, user.Email, user.Password, user.CreatedAt, user.UpdatedAt)
+		"INSERT INTO users (first_name, last_name, email, password, type_user_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+		user.FirstName, user.LastName, user.Email, user.Password, user.TypeUserId, user.CreatedAt, user.UpdatedAt)
 	return err
 }
 
 // FindByEmail finds a user by their email.
 func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	var user model.User
-	err := database.GetDB().Get(&user, "SELECT * FROM users WHERE email = ?", email)
+	err := database.GetDB().Get(&user, "SELECT * FROM users WHERE email = $1", email)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			// Log and return explicit "no user found" info
+			fmt.Printf("No user found for email: %s\n", email)
 			return nil, nil // No user found
 		}
+		// Log unexpected errors for further diagnosis
+		fmt.Printf("Database error during user fetch: %v\n", err)
 		return nil, err // Database error
 	}
 	return &user, nil
@@ -79,15 +83,16 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 func (r *UserRepository) UpdateUser(user *model.User) error {
 	db := database.GetDB()
 	_, err := db.Exec(
-		"UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ?, companyId = ?, updatedAt = NOW() WHERE id = ?",
+		"UPDATE users SET first_name = $1, last_name = $2, email = $3, password = $4, updated_at = NOW() WHERE id = $5",
 		user.FirstName, user.LastName, user.Email, user.Password, user.ID)
 	return err
 }
 
-// DeleteUser removes a user from the database.
+// DeleteUser performs a soft delete on a user by setting the deleted_at timestamp.
 func (r *UserRepository) DeleteUser(id uint) error {
 	db := database.GetDB()
-	_, err := db.Exec("DELETE FROM users WHERE id = ?", id)
+	// Use the current time to mark as deleted
+	_, err := db.Exec("UPDATE users SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL", id)
 	return err
 }
 
@@ -100,21 +105,11 @@ func (r *UserRepository) GetAllUsers() ([]*model.User, error) {
 	}
 	return users, nil
 }
-func (r *UserRepository) GetAllUsersByCompanyId(companyId uint) ([]*model.User, error) {
-	var users []*model.User
-	query := "SELECT id, firstName, lastName, email, password, companyId, createdAt, updatedAt FROM users WHERE companyId = ?"
-	err := database.GetDB().Select(&users, query, companyId)
-	if err != nil {
-		log.Printf("Error fetching users for company: %v", err)
-		return nil, err
-	}
-	return users, nil
-}
 
 // FindById finds a user by their ID.
 func (r *UserRepository) FindById(id uint) (*model.User, error) {
 	var user model.User
-	err := database.GetDB().Get(&user, "SELECT * FROM users WHERE id = ?", id)
+	err := database.GetDB().Get(&user, "SELECT * FROM users WHERE id = $1", id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil // No user found
