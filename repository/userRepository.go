@@ -68,11 +68,9 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	err := database.GetDB().Get(&user, "SELECT * FROM users WHERE email = $1", email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			// Log and return explicit "no user found" info
 			fmt.Printf("No user found for email: %s\n", email)
-			return nil, nil // No user found
+			return nil, nil
 		}
-		// Log unexpected errors for further diagnosis
 		fmt.Printf("Database error during user fetch: %v\n", err)
 		return nil, err // Database error
 	}
