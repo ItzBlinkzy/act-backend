@@ -18,3 +18,15 @@ CREATE TABLE IF NOT EXISTS users (
     deleted_at TIMESTAMP,        
     CONSTRAINT fk_user_type_user FOREIGN KEY (type_user_id) REFERENCES type_user (id)
 );
+
+CREATE TABLE IF NOT EXISTS bought_stocks (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    ticker VARCHAR(255) NOT NULL,
+    quantity_owned INTEGER,
+    quantity_sold INTEGER,
+    created_at TIMESTAMP NOT NULL, 
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP,        
+    CONSTRAINT fk_user_bought_stocks FOREIGN KEY (user_id) REFERENCES users (id)
+);
