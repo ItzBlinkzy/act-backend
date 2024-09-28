@@ -131,6 +131,7 @@ func GetCurrentUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, user)
 }
+
 func UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
