@@ -15,13 +15,13 @@ type StockRepository struct{}
 func (r *StockRepository) ListBoughtStocks(userId uint) ([]model.Stock, error) {
 	var stocks []model.Stock
 	query := "SELECT * FROM bought_stocks WHERE user_id = $1 AND deleted_at IS NULL"
-	log.Printf("Executing query: %s with userID: %d", query, userId) // Log the query and user ID
+	log.Printf("Executing query: %s with userID: %d", query, userId)
 	err := database.GetDB().Select(&stocks, query, userId)
 	if err != nil {
-		log.Printf("Error fetching stocks for user %d: %v", userId, err) // Log specific error if query fails
+		log.Printf("Error fetching stocks for user %d: %v", userId, err)
 		return nil, err
 	}
-	log.Printf("Successfully fetched stocks for user %d", userId) // Log success message
+	log.Printf("Successfully fetched stocks for user %d", userId)
 	return stocks, nil
 }
 
