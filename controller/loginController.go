@@ -17,8 +17,11 @@ import (
 
 func Login(c echo.Context) error {
 	fmt.Println("%+v", c)
+
+	// Log request headers for debugging purposes
 	fmt.Println("Request Headers:", c.Request().Header)
 
+	// Log request IP address (origin)
 	ip := c.RealIP()
 	fmt.Println("Client IP:", ip)
 
@@ -55,8 +58,7 @@ func Login(c echo.Context) error {
 	cookie := &http.Cookie{}
 	cookie.Name = os.Getenv("AUTH_COOKIE")
 	cookie.Value = t
-	expirationTime := time.Now().Add(10 * time.Hour) // Matching cookie expiration
-	claims["exp"] = expirationTime.Unix()
+	cookie.Expires = time.Now().Add(3 * time.Hour)
 	cookie.HttpOnly = true
 	cookie.Secure = true
 	cookie.Path = "/"
