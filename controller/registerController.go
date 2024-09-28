@@ -19,23 +19,23 @@ func Register(c echo.Context) error {
 	}
 
 	if payload.Email == "" || payload.Password == "" || payload.FirstName == "" || payload.LastName == "" || payload.TypeUserId == 0 {
-		return c.JSON(http.StatusBadRequest, "All the fields are required")
+		return c.JSON(http.StatusBadRequest, "Tutti i campi sono obbligatori")
 	}
 
 	if len(payload.Password) < 6 || !containsDigit(payload.Password) || !containsLetter(payload.Password) || len(payload.Password) > 20 {
-		return c.JSON(http.StatusBadRequest, "The passoword must be between 6 to 20 characters in lenght , containing numbers and letter ")
+		return c.JSON(http.StatusBadRequest, "La password deve contenere da 6 a 20 caratteri e includere almeno un numero e una lettera")
 	}
 
 	// Check for existing email
 	existingUser, err := repository.UserRepo.FindByEmail(payload.Email)
 	if err == nil && existingUser != nil {
-		return c.JSON(http.StatusBadRequest, "User already exist!")
+		return c.JSON(http.StatusBadRequest, "Utente gia esistente")
 	}
 
 	// Hash the password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(payload.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, "Impossing to hash password")
+		return c.JSON(http.StatusInternalServerError, "Impossibile eseguire l'hashing della password")
 	}
 
 	// Create the user
@@ -54,7 +54,7 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Failed to create user: %v", err))
 	}
 
-	return c.JSON(http.StatusOK, "User created successfully!")
+	return c.JSON(http.StatusOK, "Utente creato con successo!")
 }
 
 func containsDigit(s string) bool {
