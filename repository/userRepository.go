@@ -7,6 +7,7 @@ import (
 
 	"github.com/itzblinkzy/act-backend/database"
 	"github.com/itzblinkzy/act-backend/model"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var UserRepo = &UserRepository{}
@@ -77,13 +78,35 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-// UpdateUser updates an existing user's information.
+// UpdateUser updates an existing user's information with encrypted password.
 func (r *UserRepository) UpdateUser(user *model.User) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword) // Update with hashed password
+
 	db := database.GetDB()
-	_, err := db.Exec(
+	result, err := db.Exec(
 		"UPDATE users SET first_name = $1, last_name = $2, email = $3, password = $4, updated_at = NOW() WHERE id = $5",
 		user.FirstName, user.LastName, user.Email, user.Password, user.ID)
-	return err
+	if err != nil {
+		fmt.Printf("Database error during user update: %v\n", err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Printf("Error checking rows affected: %v\n", err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		fmt.Println("No user found with the provided ID")
+		return sql.ErrNoRows // or you can return a custom error if preferred
+	}
+
+	return nil
 }
 
 // DeleteUser performs a soft delete on a user by setting the deleted_at timestamp.
