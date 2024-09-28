@@ -44,16 +44,21 @@ func GetUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "User not found")
 	}
 
+	user.Password = "" // Do not expose the password
+
 	return c.JSON(http.StatusOK, user)
 }
-
-// controller/user_controller.go
 
 func GetAllUsers(c echo.Context) error {
 	users, err := userRepo.GetAllUsers()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch users")
 	}
+
+	for i := range users {
+		users[i].Password = "" // Set each user's password to empty
+	}
+
 	return c.JSON(http.StatusOK, users)
 }
 
@@ -117,15 +122,15 @@ func getUserFromContext(c echo.Context) (*model.User, error) {
 }
 
 func GetCurrentUser(c echo.Context) error {
-	fmt.Println(os.Getenv("ENV"), "envv")
 	user, err := getUserFromContext(c)
-
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, model.Error{Message: "Unauthoddeededdedeized"})
+		return c.JSON(http.StatusUnauthorized, model.Error{Message: "Unauthorized"})
 	}
+
+	user.Password = "" // Do not expose the password
+
 	return c.JSON(http.StatusOK, user)
 }
-
 func UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
