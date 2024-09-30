@@ -62,7 +62,7 @@ func Login(c echo.Context) error {
 	cookie.HttpOnly = true
 	cookie.Secure = true
 	cookie.Path = "/"
-	cookie.SameSite = http.SameSiteStrictMode
+	cookie.SameSite = http.SameSiteLaxMode
 	c.SetCookie(cookie)
 	return c.JSON(http.StatusOK, nil)
 
