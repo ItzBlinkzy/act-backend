@@ -144,8 +144,9 @@ func UpdateUser(c echo.Context) error {
 	}
 
 	user.ID = uint(id)
+	updatePassword := user.Password != ""
 
-	if err := repository.UserRepo.UpdateUser(&user); err != nil {
+	if err := repository.UserRepo.UpdateUser(&user, updatePassword); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update user")
 	}
 
