@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/itzblinkzy/act-backend/database"
 	"github.com/itzblinkzy/act-backend/model"
@@ -78,18 +79,27 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-// UpdateUser updates an existing user's information with encrypted password.
-func (r *UserRepository) UpdateUser(user *model.User) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-	user.Password = string(hashedPassword) // Update with hashed password
-
+// UpdateUser updates an existing user's information, optionally updating the password if provided.
+func (r *UserRepository) UpdateUser(user *model.User, updatePassword bool) error {
 	db := database.GetDB()
-	result, err := db.Exec(
-		"UPDATE users SET first_name = $1, last_name = $2, email = $3, password = $4, updated_at = NOW() WHERE id = $5",
-		user.FirstName, user.LastName, user.Email, user.Password, user.ID)
+
+	// Prepare query based on provided data
+	query := "UPDATE users SET first_name = $1, last_name = $2, email = $3, updated_at = $4"
+	args := []interface{}{user.FirstName, user.LastName, user.Email, time.Now(), user.ID}
+
+	if updatePassword && user.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+		user.Password = string(hashedPassword)
+		query += ", password = $5"
+		args = append(args, user.Password)
+	}
+
+	query += " WHERE id = $6"
+
+	result, err := db.Exec(query, args...)
 	if err != nil {
 		fmt.Printf("Database error during user update: %v\n", err)
 		return err
