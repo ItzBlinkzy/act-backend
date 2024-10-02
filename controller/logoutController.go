@@ -14,9 +14,9 @@ func Logout(c echo.Context) error {
 	cookie.Value = ""
 	cookie.Expires = time.Unix(0, 0) // set the expiration to a past time
 	cookie.HttpOnly = true
-	cookie.Secure = false // Should be true over HTTPS
+	cookie.Secure = true
 	cookie.Path = "/"
-	cookie.SameSite = http.SameSiteLaxMode
+	cookie.SameSite = http.SameSiteNoneMode
 	c.SetCookie(cookie)
 
 	return c.JSON(http.StatusOK, "User logged out successfully")
