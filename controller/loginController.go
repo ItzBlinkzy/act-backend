@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/itzblinkzy/act-backend/model"
@@ -33,7 +34,7 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": "Invalid request payload"})
 	}
 
-	user, err := repository.UserRepo.FindByEmail(payload.Email)
+	user, err := repository.UserRepo.FindByEmail(strings.ToLower(payload.Email))
 	if err != nil || user == nil {
 		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Invalid email or password"})
 	}
@@ -42,7 +43,6 @@ func Login(c echo.Context) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(payload.Password)); err != nil {
 		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Invalid email or password"})
 	}
-
 	// generating token
 	token := jwt.New(jwt.SigningMethodHS256)
 
