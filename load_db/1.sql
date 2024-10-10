@@ -30,3 +30,14 @@ CREATE TABLE IF NOT EXISTS bought_stocks (
     deleted_at TIMESTAMP,        
     CONSTRAINT fk_user_bought_stocks FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+CREATE TABLE IF NOT EXISTS reviews (
+    id SERIAL PRIMARY KEY,
+    description TEXT NOT NULL,
+    stars INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL, 
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP,   
+    CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES users (id)
+);
