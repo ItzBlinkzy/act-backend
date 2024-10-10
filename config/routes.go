@@ -16,4 +16,5 @@ func InitRoutes(e *echo.Echo) {
 	v1.LogoutGroup(v1Group)
 	v1.UserGroup(v1Group)
 	v1.StockGroup(v1Group)
+	v1.ReviewGroup(v1Group)
 }
