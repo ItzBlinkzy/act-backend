@@ -52,7 +52,7 @@ func GoogleCallbackHandler(c echo.Context) error {
 func isSkippedPath(c echo.Context) bool {
 	skippedPaths := []string{
 		"/api/v1/login",
-		"/api/v1/register-user"
+		"/api/v1/register-user",
 	}
 	for _, path := range skippedPaths {
 		if path == c.Path() {
