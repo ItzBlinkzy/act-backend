@@ -18,6 +18,9 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid request payload")
 	}
 
+	  // Debug the payload REMOVE WHEN DONE
+	  fmt.Printf("Payload after binding: %+v\n", payload)
+
 	if payload.Email == "" || payload.Password == "" || payload.FirstName == "" || payload.LastName == "" || payload.TypeUserId == 0 {
 		return c.JSON(http.StatusBadRequest, "Tutti i campi sono obbligatori")
 	}
