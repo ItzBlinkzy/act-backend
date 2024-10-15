@@ -82,14 +82,21 @@ func InitEcho() *echo.Echo {
 
 	var allowOrigins []string
 	var allowHeaders []string
-
+	
+	// Only allowed origins
+	allowOrigins = []string{
+		"http://localhost:5173",
+		"http://localhost:3000",
+		"https://act-frontend.netlify.app",
+	}
+	
 	if os.Getenv("ENV") == "development" {
-		allowOrigins = []string{"http://localhost:5173", "http://192.168.0.67:5173", "http://192.168.0.210:5173"}
 		allowHeaders = []string{"Content-Type", "Timezone", "User-email"}
 	} else {
-		allowOrigins = []string{"https://condominioforyou.app", "https://www.condominioforyou.app", "http://localhost:5173", "https://act-frontend.netlify.app"}
+		// Production headers
 		allowHeaders = []string{"Content-Type", "Timezone"}
 	}
+	
 
 	config := middleware.RateLimiterConfig{
 		Skipper: middleware.DefaultSkipper,
