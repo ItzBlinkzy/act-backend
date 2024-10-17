@@ -15,7 +15,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-var userRepo = &repository.UserRepository{} // Using the global UserRepository instance
+var userRepo = &repository.UserRepository{}
 
 func RegisterUser(c echo.Context) error {
 	var user model.User
