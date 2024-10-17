@@ -25,9 +25,10 @@ func (r *StockRepository) ListBoughtStocks(userId uint) ([]model.Stock, error) {
 	return stocks, nil
 }
 
-func (r *StockRepository) BuyStock(stock model.StockBuy, quantity int) error {
-	_, err := database.GetDB().Exec("INSERT INTO bought_stocks (user_id, ticker, quantity_owned, quantity_sold, created_at, updated_at) VALUES ($1, $2, $3, 0, NOW(), NOW())",
-		stock.UserId, stock.Ticker, quantity)
+func (r *StockRepository) BuyStock(stock model.StockBuy) error {
+	_, err := database.GetDB().Exec(
+		"INSERT INTO bought_stocks (user_id, client_id, ticker, quantity_owned, quantity_sold, created_at, updated_at) VALUES ($1, $2, $3, $4, 0, NOW(), NOW())",
+		stock.UserId, stock.Clientid, stock.Ticker, stock.BuyingQuantity)
 	if err != nil {
 		log.Printf("Failed to buy stock: %v", err)
 		return err
@@ -37,7 +38,7 @@ func (r *StockRepository) BuyStock(stock model.StockBuy, quantity int) error {
 
 func (r *StockRepository) UpdateStock(id uint, update model.StockUpdate) error {
 	if update.SellingQuantity > 0 {
-		// Check if sufficient quantity owned before selling
+		// Check if there's enough stock to sell
 		var currentOwned int
 		err := database.GetDB().QueryRow("SELECT quantity_owned FROM bought_stocks WHERE id = $1", id).Scan(&currentOwned)
 		if err != nil {
@@ -48,16 +49,17 @@ func (r *StockRepository) UpdateStock(id uint, update model.StockUpdate) error {
 			return errors.New("not enough stock owned to sell the requested amount")
 		}
 
-		// Proceed with update if sufficient
-		_, err = database.GetDB().Exec("UPDATE bought_stocks SET quantity_owned = quantity_owned - $1, quantity_sold = quantity_sold + $1 WHERE id = $2",
-			update.SellingQuantity, id)
+		// Update the stock records, subtracting from owned and adding to sold, also update client_id if provided
+		_, err = database.GetDB().Exec("UPDATE bought_stocks SET quantity_owned = quantity_owned - $1, quantity_sold = quantity_sold + $1, client_id = $2 WHERE id = $3",
+			update.SellingQuantity, update.ClientId, id)
 		if err != nil {
 			log.Printf("Failed to update stock: %v", err)
 			return err
 		}
 	} else if update.BuyingQuantity > 0 {
-		_, err := database.GetDB().Exec("UPDATE bought_stocks SET quantity_owned = quantity_owned + $1 WHERE id = $2",
-			update.BuyingQuantity, id)
+		// Add to the quantity owned and update client_id if provided
+		_, err := database.GetDB().Exec("UPDATE bought_stocks SET quantity_owned = quantity_owned + $1, client_id = $2 WHERE id = $3",
+			update.BuyingQuantity, update.ClientId, id)
 		if err != nil {
 			log.Printf("Failed to update stock: %v", err)
 			return err
