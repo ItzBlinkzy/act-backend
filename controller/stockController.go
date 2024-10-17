@@ -31,18 +31,19 @@ func ListBoughtStocks(ctx echo.Context) error {
 	log.Printf("Stocks listed successfully for user ID %d", userId)
 	return ctx.JSON(http.StatusOK, stocks)
 }
+
 func BuyStock(ctx echo.Context) error {
 	var stock model.StockBuy
 	if err := ctx.Bind(&stock); err != nil {
 		return ctx.JSON(http.StatusBadRequest, echo.Map{"error": "invalid stock data"})
 	}
 
-	// Check if buying_quantity is valid
+	// Check if buying quantity is valid
 	if stock.BuyingQuantity <= 0 {
 		return ctx.JSON(http.StatusBadRequest, echo.Map{"error": "invalid buying quantity"})
 	}
 
-	err := stockRepo.BuyStock(stock, stock.BuyingQuantity)
+	err := stockRepo.BuyStock(stock)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": "failed to buy stock"})
 	}
