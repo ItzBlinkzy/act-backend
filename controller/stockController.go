@@ -68,3 +68,33 @@ func UpdateStock(ctx echo.Context) error {
 	}
 	return ctx.JSON(http.StatusOK, echo.Map{"message": "stock updated"})
 }
+
+// List logs by userId
+func LogsBoughtStocksByUser(ctx echo.Context) error {
+	userIdParam := ctx.Param("userId")
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, echo.Map{"error": "invalid user ID"})
+	}
+
+	logs, err := stockRepo.GetLogsByUserId(userId)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": "failed to fetch logs"})
+	}
+	return ctx.JSON(http.StatusOK, logs)
+}
+
+// List logs by stockId
+func LogsBoughtStocksByStock(ctx echo.Context) error {
+	stockIdParam := ctx.Param("stockId")
+	stockId, err := strconv.Atoi(stockIdParam)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, echo.Map{"error": "invalid stock ID"})
+	}
+
+	logs, err := stockRepo.GetLogsByStockId(stockId)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": "failed to fetch logs"})
+	}
+	return ctx.JSON(http.StatusOK, logs)
+}
