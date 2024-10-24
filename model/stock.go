@@ -27,3 +27,13 @@ type StockUpdate struct {
 	SellingQuantity int    `json:"selling_quantity"`
 	ClientId        *uint  `db:"client_id" json:"client_id"`
 }
+
+type Log struct {
+	ID             int       `db:"id" json:"id"`
+	UserID         int       `db:"user_id" json:"user_id"`
+	BoughtStockID  int       `db:"bought_stock_id" json:"bought_stock_id"`
+	QuantityBought *int      `db:"quantity_bought" json:"quantity_bought"`
+	QuantitySold   *int      `db:"quantity_sold" json:"quantity_sold"`
+	ClientId       *uint     `db:"client_id" json:"client_id"`
+	CreatedAt      time.Time `db:"created_at" json:"created_at"`
+}
