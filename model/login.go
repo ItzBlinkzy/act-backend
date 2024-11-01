@@ -6,6 +6,6 @@ type LoginPayload struct {
 }
 
 type LoginResponse struct {
-    Token  string `json:"token"`
-    ClientManagerAssociations []ClientManagerAssociation `json:"client_manager_associations"`
+    Token              string          `json:"token"`
+    Clients            []Client  `json:"clients"`
 }

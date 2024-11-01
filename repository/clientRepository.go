@@ -9,6 +9,11 @@ import (
 	"github.com/lib/pq"
 )
 
+var ClientRepo = &ClientRepository{}
+
+// ClientRepository struct with no fields, using singleton database connection.
+type ClientRepository struct{}
+
 // CreateClient inserts a new client into the database and returns the new client's ID.
 func CreateClient(client model.Client) (uint, error) {
 	var clientId uint
