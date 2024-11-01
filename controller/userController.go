@@ -129,8 +129,21 @@ func GetCurrentUser(c echo.Context) error {
 
 	user.Password = "" // Do not expose the password
 
-	return c.JSON(http.StatusOK, user)
+    // Fetch associated clients for this user (assuming user ID is manager ID)
+    clients, err := repository.GetAllClients(user.ID)
+    if err != nil {
+        return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not retrieve clients"})
+    }
+
+    // Return JSON response with user and associated clients
+    response := echo.Map{
+        "user":    user,
+        "clients": clients,
+    }
+
+    return c.JSON(http.StatusOK, response)
 }
+
 
 func UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
