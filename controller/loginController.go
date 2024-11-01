@@ -55,7 +55,7 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, model.Error{Message: "An error occurred. Please try again or contact the administrator."})
 	}
 
-	associations, err := repository.ClientManagerAssociationRepo.FindByManagerId(user.ID)
+	associations, err := repository.userRepo.GetAllClients(user.ID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not retrieve client-manager associations"})
 	}
@@ -70,7 +70,7 @@ func Login(c echo.Context) error {
 	cookie.Path = "/"
 	cookie.SameSite = http.SameSiteNoneMode
 	c.SetCookie(cookie)
-	
+
 	// Return JSON response with token and associations
 	response := LoginResponse{
 		Token:                  t,
