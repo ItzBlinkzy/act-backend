@@ -18,4 +18,5 @@ func InitRoutes(e *echo.Echo) {
 	v1.StockGroup(v1Group)
 	v1.ReviewGroup(v1Group)
 	v1.ClientGroup(v1Group)
+	v1.ChatBotGroup(v1Group)
 }
