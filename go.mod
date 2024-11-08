@@ -34,6 +34,7 @@ require (
 	github.com/markbates/goth v1.80.0
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/plutov/paypal/v3 v3.1.0
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/stripe/stripe-go v70.15.0+incompatible
 	github.com/stripe/stripe-go/v71 v71.48.0
