@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    credit DECIMAL(10, 2) DEFAULT 0.00;
     type_user_id INTEGER NOT NULL,  
     created_at TIMESTAMP NOT NULL, 
     updated_at TIMESTAMP NOT NULL,

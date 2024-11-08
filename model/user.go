@@ -8,6 +8,7 @@ type User struct {
 	LastName   string     `db:"last_name" json:"last_name"`
 	Email      string     `db:"email" json:"email"`
 	Password   string     `db:"password" json:"password"`
+	Credit     *float64   `db:"credit" json:"credit"`
 	TypeUserId uint       `db:"type_user_id" json:"type_user_id"`
 	CreatedAt  time.Time  `db:"created_at" json:"created_at"`
 	UpdatedAt  time.Time  `db:"updated_at" json:"updated_at"`

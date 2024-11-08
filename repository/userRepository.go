@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -148,4 +149,13 @@ func (r *UserRepository) FindById(id uint) (*model.User, error) {
 		return nil, err // Database error
 	}
 	return &user, nil
+}
+
+func (repo *UserRepository) UpdateUserCredit(userID int, amount float64) error {
+	_, err := database.GetDB().Exec("UPDATE users SET credit = credit + $1, updated_at = NOW() WHERE id = $2", amount, userID)
+	if err != nil {
+		log.Printf("Failed to update credit for user %d: %v", userID, err)
+		return err
+	}
+	return nil
 }
