@@ -19,7 +19,7 @@ func ChatBot(c echo.Context) error {
 
 	prompt := fmt.Sprintf("Here is the conversation history: %s\n\nUser: %s\n\nAI:", requestData.Context, requestData.Message)
 	requestBody := map[string]interface{}{
-		"model": "ft:gpt-4o-mini-2024-07-18:personal::ARKkt0BQ",
+		"model": "ft:gpt-4o-mini-2024-07-18:personal::ASi6mXiH",
 		"messages": []map[string]string{
 			{"role": "system", "content": "This assistant is designed to help users with inquiries about cryptocurrencies, stock market trends, and any questions related to the company's website or mobile application. The assistant provides guidance on navigating the platform, understanding market data, and making informed decisions based on current trends. Please note: all advice is for informational purposes only and does not constitute financial or investment advice."},
 			{"role": "user", "content": prompt},
