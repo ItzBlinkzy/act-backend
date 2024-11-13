@@ -48,7 +48,7 @@ func Register(c echo.Context) error {
 		TypeUserId: payload.TypeUserId,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
-		LoginMethod: payload.LoginMethod,
+		LoginMethod: "default",
 	}
 
 	if err := repository.UserRepo.CreateUser(newUser); err != nil {
