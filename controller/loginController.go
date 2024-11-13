@@ -39,6 +39,10 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Invalid email or password"})
 	}
 
+	if (user.LoginMethod == "oauth") {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Please login using Google or GitHub"})
+	}
+
 	// Check password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(payload.Password)); err != nil {
 		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "Invalid email or password"})

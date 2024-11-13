@@ -19,7 +19,7 @@ func Register(c echo.Context) error {
 	}
 
 
-	if payload.Email == "" || payload.Password == "" || payload.FirstName == "" || payload.LastName == "" || payload.TypeUserId == 0 {
+	if payload.Email == "" || payload.Password == "" || payload.FirstName == "" || payload.LastName == "" || payload.TypeUserId == 0 || payload.LoginMethod == "" {
 		return c.JSON(http.StatusBadRequest, "Tutti i campi sono obbligatori")
 	}
 
@@ -48,6 +48,7 @@ func Register(c echo.Context) error {
 		TypeUserId: payload.TypeUserId,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
+		LoginMethod: payload.LoginMethod,
 	}
 
 	if err := repository.UserRepo.CreateUser(newUser); err != nil {

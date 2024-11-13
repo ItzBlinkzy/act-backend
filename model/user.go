@@ -13,6 +13,7 @@ type User struct {
 	CreatedAt  time.Time  `db:"created_at" json:"created_at"`
 	UpdatedAt  time.Time  `db:"updated_at" json:"updated_at"`
 	DeletedAt  *time.Time `db:"deleted_at" json:"deleted_at"`
+	LoginMethod string `db:"login_method" json:"login_method"`
 }
 
 type RegistrationPayload struct {
@@ -21,4 +22,5 @@ type RegistrationPayload struct {
 	Email      string `json:"email"`
 	TypeUserId uint   `json:"type_user_id"`
 	Password   string `json:"password"`
+	LoginMethod string `json:"login_method"`
 }
