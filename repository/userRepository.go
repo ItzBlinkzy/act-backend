@@ -60,8 +60,8 @@ func (r *UserRepository) FetchAll(filters *model.User) ([]*model.User, int64, er
 func (r *UserRepository) CreateUser(user *model.User) error {
 	db := database.GetDB()
 	_, err := db.Exec(
-		"INSERT INTO users (first_name, last_name, email, password, type_user_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-		user.FirstName, user.LastName, user.Email, user.Password, user.TypeUserId, user.CreatedAt, user.UpdatedAt)
+		"INSERT INTO users (first_name, last_name, email, password, type_user_id, created_at, updated_at, login_method) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+		user.FirstName, user.LastName, user.Email, user.Password, user.TypeUserId, user.CreatedAt, user.UpdatedAt, user.LoginMethod)
 	return err
 }
 
