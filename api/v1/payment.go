@@ -7,5 +7,4 @@ import (
 
 func PaymentGroup(g *echo.Group) {
 	g.POST("/add-credit/:userId", controller.AddCredit)
-	g.POST("/paypal/webhook", controller.PayPalWebhook)
 }
