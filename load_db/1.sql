@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP NOT NULL, 
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP,        
+    login_method VARCHAR(255) NOT NUL
     CONSTRAINT fk_user_type_user FOREIGN KEY (type_user_id) REFERENCES type_user (id)
 );
 
