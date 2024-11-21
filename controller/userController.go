@@ -73,12 +73,11 @@ func getUserFromContext(c echo.Context) (*model.User, error) {
 		}
 
 		userEmail := userEmailHeader
-		// Remove the err check here since `userEmailHeader` is already a string
 		user, err := repository.UserRepo.FindByEmail(userEmail)
 		if err != nil {
 			return nil, err
 		}
-		// Optionally check if user is deleted (you commented this out)
+		// Optionally check if user is deleted
 		// if user.IsDeleted {
 		// 	return nil, errors.New("user is deleted")
 		// }
@@ -129,21 +128,20 @@ func GetCurrentUser(c echo.Context) error {
 
 	user.Password = "" // Do not expose the password
 
-    // Fetch associated clients for this user (assuming user ID is manager ID)
-    clients, err := repository.GetAllClients(user.ID)
-    if err != nil {
-        return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not retrieve clients"})
-    }
+	// Fetch associated clients for this user (assuming user ID is manager ID)
+	clients, err := repository.GetAllClients(user.ID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Could not retrieve clients"})
+	}
 
-    // Return JSON response with user and associated clients
-    response := echo.Map{
-        "user":    user,
-        "clients": clients,
-    }
+	// Return JSON response with user and associated clients
+	response := echo.Map{
+		"user":    user,
+		"clients": clients,
+	}
 
-    return c.JSON(http.StatusOK, response)
+	return c.JSON(http.StatusOK, response)
 }
-
 
 func UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))

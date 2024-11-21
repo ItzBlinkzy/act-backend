@@ -12,7 +12,7 @@ func Logout(c echo.Context) error {
 	cookie := new(http.Cookie)
 	cookie.Name = os.Getenv("AUTH_COOKIE")
 	cookie.Value = ""
-	cookie.Expires = time.Unix(0, 0) // set the expiration to a past time
+	cookie.Expires = time.Unix(0, 0)
 	cookie.HttpOnly = true
 	cookie.Secure = true
 	cookie.Path = "/"

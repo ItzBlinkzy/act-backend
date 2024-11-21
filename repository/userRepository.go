@@ -84,7 +84,6 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 func (r *UserRepository) UpdateUser(user *model.User, updatePassword bool) error {
 	db := database.GetDB()
 
-	// Prepare query based on provided data
 	query := "UPDATE users SET first_name = $1, last_name = $2, email = $3, updated_at = $4"
 	args := []interface{}{user.FirstName, user.LastName, user.Email, time.Now(), user.ID}
 
@@ -123,7 +122,6 @@ func (r *UserRepository) UpdateUser(user *model.User, updatePassword bool) error
 // DeleteUser performs a soft delete on a user by setting the deleted_at timestamp.
 func (r *UserRepository) DeleteUser(id uint) error {
 	db := database.GetDB()
-	// Use the current time to mark as deleted
 	_, err := db.Exec("UPDATE users SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL", id)
 	return err
 }
@@ -144,9 +142,9 @@ func (r *UserRepository) FindById(id uint) (*model.User, error) {
 	err := database.GetDB().Get(&user, "SELECT * FROM users WHERE id = $1", id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil // No user found
+			return nil, nil
 		}
-		return nil, err // Database error
+		return nil, err
 	}
 	return &user, nil
 }

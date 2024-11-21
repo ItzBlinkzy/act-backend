@@ -11,7 +11,6 @@ import (
 
 var ClientRepo = &ClientRepository{}
 
-// ClientRepository struct with no fields, using singleton database connection.
 type ClientRepository struct{}
 
 // CreateClient inserts a new client into the database and returns the new client's ID.
@@ -39,9 +38,9 @@ func CreateAssociation(association model.ClientManagerAssociation) error {
 		association.ManagerId, association.ClientId,
 	)
 	if err != nil {
-		tx.Rollback()                       // Roll back the transaction on error
-		if err, ok := err.(*pq.Error); ok { // Check if it is a pq error
-			if err.Code == "23503" { // PostgreSQL foreign key violation error code
+		tx.Rollback()
+		if err, ok := err.(*pq.Error); ok {
+			if err.Code == "23503" {
 				return fmt.Errorf("foreign key violation: %v", err)
 			}
 		}

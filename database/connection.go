@@ -27,7 +27,6 @@ func GetDB() *sqlx.DB {
 	if db == nil {
 		connect()
 	} else {
-		// Limit Ping calls to once per minute to reduce overhead
 		if time.Since(lastPingTime) > time.Minute {
 			if err := db.Ping(); err != nil {
 				log.Printf("Database connection failed on ping: %s\n", err)

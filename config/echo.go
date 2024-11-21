@@ -1,8 +1,6 @@
 package config
 
 import (
-	"context"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -11,43 +9,7 @@ import (
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 )
-
-// Initialize OAuth2 configuration
-var googleOauthConfig = &oauth2.Config{
-	RedirectURL:  "http://localhost:8080/api/v1/google/callback",
-	ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-	ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-	Endpoint:     google.Endpoint,
-}
-
-// Handler to initiate Google login
-func GoogleLoginHandler(c echo.Context) error {
-	url := googleOauthConfig.AuthCodeURL("state", oauth2.AccessTypeOffline)
-	return c.Redirect(http.StatusTemporaryRedirect, url)
-}
-
-// Handler for Google OAuth2 callback
-func GoogleCallbackHandler(c echo.Context) error {
-	code := c.QueryParam("code")
-	token, err := googleOauthConfig.Exchange(context.Background(), code)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to exchange token"})
-	}
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get user info"})
-	}
-	defer response.Body.Close()
-	contents, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to read response body"})
-	}
-	return c.JSON(http.StatusOK, echo.Map{"data": string(contents)})
-}
 
 func isSkippedPath(c echo.Context) bool {
 	skippedPaths := []string{
@@ -82,21 +44,20 @@ func InitEcho() *echo.Echo {
 
 	var allowOrigins []string
 	var allowHeaders []string
-	
+
 	// Only allowed origins
 	allowOrigins = []string{
 		"http://localhost:5173",
 		"http://localhost:3000",
 		"https://act-frontend.netlify.app",
 	}
-	
+
 	if os.Getenv("ENV") == "development" {
 		allowHeaders = []string{"Content-Type", "Timezone", "User-email"}
 	} else {
 		// Production headers
 		allowHeaders = []string{"Content-Type", "Timezone"}
 	}
-	
 
 	config := middleware.RateLimiterConfig{
 		Skipper: middleware.DefaultSkipper,

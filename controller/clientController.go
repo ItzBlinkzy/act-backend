@@ -105,12 +105,11 @@ func GetAllClients(c echo.Context) error {
 	var response []map[string]interface{}
 
 	for _, client := range clients {
-		stocks, err := repository.GetStocksOfClient(client.ID) // assuming client.ID is the correct ID field
+		stocks, err := repository.GetStocksOfClient(client.ID)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to retrieve stocks"})
 		}
 
-		// Append client and stocks data to the response array
 		response = append(response, map[string]interface{}{
 			"client": client,
 			"stocks": stocks,
@@ -119,7 +118,6 @@ func GetAllClients(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, response)
 }
-
 
 func GetStocksOfClient(c echo.Context) error {
 	clientIdParam := c.Param("clientId")
