@@ -15,10 +15,10 @@ type Stock struct {
 }
 
 type StockBuy struct {
-	UserId         uint   `db:"user_id" json:"user_id"`
-	Clientid       *uint  `db:"client_id" json:"client_id"`
-	Ticker         string `json:"ticker"`
-	BuyingQuantity int    `json:"buying_quantity"`
+    UserId         uint    `db:"user_id" json:"user_id"`
+    Clientid       *uint   `db:"client_id" json:"client_id"`
+    Ticker         string  `json:"ticker"`
+    BuyingQuantity float64 `json:"buying_quantity"`  // Changed from int to float64 to handle fractional shares
 }
 
 type StockUpdate struct {

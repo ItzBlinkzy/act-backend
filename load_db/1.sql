@@ -20,13 +20,12 @@ CREATE TABLE IF NOT EXISTS users (
     login_method VARCHAR(255) NOT NUL
     CONSTRAINT fk_user_type_user FOREIGN KEY (type_user_id) REFERENCES type_user (id)
 );
-
 CREATE TABLE IF NOT EXISTS bought_stocks (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     ticker VARCHAR(255) NOT NULL,
-    quantity_owned INTEGER,
-    quantity_sold INTEGER,
+    quantity_owned NUMERIC(10, 4),  -- Changed from FLOAT to NUMERIC(10, 4) for precision
+    quantity_sold NUMERIC(10, 4),   -- Changed from FLOAT to NUMERIC(10, 4) for precision
     client_id INTEGER,
     created_at TIMESTAMP NOT NULL, 
     updated_at TIMESTAMP NOT NULL,
@@ -39,14 +38,15 @@ CREATE TABLE IF NOT EXISTS logs_bought_stocks (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     bought_stock_id INTEGER NOT NULL,
-    quantity_bought INTEGER DEFAULT NULL,
-    quantity_sold INTEGER DEFAULT NULL,
+    quantity_bought NUMERIC(10, 4) DEFAULT NULL,  -- Changed from FLOAT to NUMERIC(10, 4) for precision
+    quantity_sold NUMERIC(10, 4) DEFAULT NULL,    -- Changed from FLOAT to NUMERIC(10, 4) for precision
     client_id INTEGER,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_user_bought_stocks FOREIGN KEY (user_id) REFERENCES users (id),
     CONSTRAINT fk_logs_bought_stocks FOREIGN KEY (bought_stock_id) REFERENCES bought_stocks (id),
     CONSTRAINT fk_logs_clients_stocks FOREIGN KEY (client_id) REFERENCES clients (id)
 );
+
 
 CREATE TABLE IF NOT EXISTS reviews (
     id SERIAL PRIMARY KEY,
