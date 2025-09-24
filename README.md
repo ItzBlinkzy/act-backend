@@ -27,4 +27,25 @@ Our system is split into two main components:
 - [Git](https://git-scm.com/)  
 - Optional: [Docker](https://www.docker.com/) for containerized setup  
 
+
+### Running the Backend (Go + Echo)
+
+1. Clone the repository and navigate to the backend folder:
+
+```
+git clone https://github.com/your-org/act-backend.git
+cd act-backend
+```
+
+2. Download dependencies:
+```
+go mod tidy
+```
+
+
+3. Run the application:
+
+```
+go run main.go
+```
 ---
