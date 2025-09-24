@@ -5,7 +5,7 @@
 As part of our third-year group project, we developed an **AI-driven agentic trading application**. The system consists of a **React (Vite) frontend** and a **Go (Echo) backend**, working together to provide portfolio insights, AI-driven recommendations, and client/asset management.  
 
 🌐 **Live Frontend:** [https://act-frontend.netlify.app](https://act-frontend.netlify.app)  
-🚀 **Frontend Github:** [https://github.com/ItzBlinkzy/act-backend](https://github.com/ItzBlinkzy/act-backend)
+🚀 **Frontend Github:** [https://github.com/ItzBlinkzy/act-frontend](https://github.com/ItzBlinkzy/act-frontend)
 ---
 
 ## Architecture  
